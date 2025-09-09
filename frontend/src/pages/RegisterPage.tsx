@@ -1,6 +1,7 @@
 import { Box, Container, Typography ,TextField, Button } from "@mui/material";
 import { useRef, useState } from "react";
 import { BASE_URL } from "../constans/baseUrl";
+import { useAuth } from "../context/Auth/AuthContext";
 
 function RegisterPage() {
     
@@ -9,23 +10,34 @@ function RegisterPage() {
     const emailRef= useRef<HTMLInputElement>(null);
     const passwordRef= useRef<HTMLInputElement>(null);
     const [customError, setError] = useState("");
+    const {login} = useAuth();
 
+    
     const onsubmit = async () => {
         const firstName = firstNameRef.current?.value;
         const lastName = lastNameRef.current?.value;
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
-        
+
+        // validate inputs
+        if(!firstName||!lastName||!email||!password)
+              return setError("All fields are required");
+
+        // call register api
         const response = await fetch(`${BASE_URL}/user/register`,{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify({firstName,lastName,email,password})
         });
+        // check response
         if(!response.ok){
            setError("Unable to register user");
         }
-        const data = await response.json();
-        console.log(data);
+        // get token from response
+        const token = await response.json();
+        if(!token)
+              return setError("Unable to register user");
+        login(email,token);    
     }
     return (
         <Container>
