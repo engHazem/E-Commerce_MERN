@@ -5,6 +5,7 @@ import userRoute from './routes/userRoute';
 import { seedInitialProducts } from './services/productService';
 import productRoute from './routes/productRoute';
 import cartRoute from './routes/cartRoute';
+import cors from 'cors';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -15,7 +16,7 @@ const PORT = 3001;
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
-
+app.use(cors());
 //Connect to MongoDB
 mongoose.connect(process.env.DATABASE_URL ||"")
 .then(() => {
