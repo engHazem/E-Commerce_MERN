@@ -1,5 +1,5 @@
 import exprees from 'express';
-import { addItemToCart, DeleteAllItemsInCart, DeleteItemInCart, getActiveCartForUser, updateItemInCart } from '../services/cartService';
+import { addItemToCart, checkout, DeleteAllItemsInCart, DeleteItemInCart, getActiveCartForUser, updateItemInCart } from '../services/cartService';
 import { AuthenticatedRequest } from '../types/AuthenticatedRequest';
 import validateJWT from '../middlewares/validateJWT';
 const router = exprees.Router();
@@ -43,4 +43,12 @@ router.delete('/',validateJWT, async (request:AuthenticatedRequest, response) =>
     
 }
 );
+router.post('/checkout',validateJWT, async (request:AuthenticatedRequest, response) => {
+    const userId = request.user._id;
+    const {address} = request.body; 
+    const responseData = await checkout({userId,address});
+    response.status(responseData.statuscode || 500).send(responseData.data);
+}
+);
+
 export default router;
