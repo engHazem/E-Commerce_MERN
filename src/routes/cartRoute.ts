@@ -1,5 +1,5 @@
 import exprees from 'express';
-import { addItemToCart, getActiveCartForUser } from '../services/cartService';
+import { addItemToCart, getActiveCartForUser, updateItemInCart } from '../services/cartService';
 import { AuthenticatedRequest } from '../types/AuthenticatedRequest';
 import validateJWT from '../middlewares/validateJWT';
 const router = exprees.Router();
@@ -20,6 +20,12 @@ router.post('/items',validateJWT, async (request:AuthenticatedRequest, res) => {
 }
 );
 
-
+router.put ('/items',validateJWT, async (request:AuthenticatedRequest, response) => {
+    const userId = request.user._id;
+    const {productId, quantity} = request.body;
+    const responseData = await updateItemInCart({userId,productId, quantity});
+    response.status(responseData.statuscode || 500).send(responseData.data);
+}
+);
 
 export default router;
