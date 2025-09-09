@@ -1,4 +1,4 @@
-import cartModel, { ICart } from "../models/cartModel";
+import cartModel, { ICart, ICartItem } from "../models/cartModel";
 import productModel from "../models/productModel";
 
 interface createCartForUser {
@@ -85,7 +85,7 @@ export const updateItemInCart= async ({userId, productId, quantity}: updateItemI
         // Recalculate total amount
         const otherCartItems = cart?.items.filter((item) => item.product.toString() !== productId);
         
-        let total = otherCartItems?.reduce((acc, item) => acc + item.unitprice * item.quantity, 0) || 0;
+        let total = calculateTotal(otherCartItems || []);
         existsInCart.quantity = quantity;
 
         total += existsInCart.unitprice * quantity;
@@ -95,4 +95,46 @@ export const updateItemInCart= async ({userId, productId, quantity}: updateItemI
     } catch (error) {
         return { data:error , statuscode: 400};
     }
+}
+
+interface DeleteItemInCartParams {
+    userId: string;
+    productId: any;
+}
+export const DeleteItemInCart= async ({userId, productId}: DeleteItemInCartParams) => {
+    try {
+        const cart  = await getActiveCartForUser({userId});
+        const existsInCart = cart?.items.find((item) => item.product.toString() === productId);
+        if (!existsInCart) {
+            return { data : "Item not found in cart" , statuscode: 404};
+        } 
+        // Recalculate total amount
+        const otherCartItems = cart?.items.filter((item) => item.product.toString() !== productId);
+        let total = calculateTotal(otherCartItems || []);
+        cart!.totalAmount = total;
+        cart!.items = otherCartItems || [];
+        const updatedCart = await cart?.save();
+        return { data:updatedCart , statuscode: 200};
+    } catch (error) {
+        return { data:error , statuscode: 400};
+    }
+}
+
+interface DeleteAllItemsInCartParams {
+    userId: string;
+}
+export const DeleteAllItemsInCart= async ({userId}: DeleteAllItemsInCartParams) => {
+    try {
+        const cart  = await getActiveCartForUser({userId});
+        cart!.items = [];
+        cart!.totalAmount = 0;
+        const updatedCart = await cart?.save();
+        return { data:updatedCart , statuscode: 200};
+    } catch (error) {
+        return { data:error , statuscode: 400};
+    }
+}
+
+const calculateTotal = (cart: ICartItem[]) => {
+    return cart?.reduce((acc, item) => acc + item.unitprice * item.quantity, 0) || 0;;
 }
