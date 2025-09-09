@@ -11,12 +11,12 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useAuth } from "../context/Auth/AuthContext";
-import { Button, Grid } from "@mui/material";
+import { Badge, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 function Navbar() {
-  const { username, isAuthenticated ,logout} = useAuth();
+  const { username, isAuthenticated, logout } = useAuth();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -30,16 +30,20 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
-  const handleLogin = ()=>{
+  const handleLogin = () => {
     navigate("/login");
-  }
+  };
 
-  const handleLogout = ()=>{
+  const handleLogout = () => {
     logout();
     handleCloseUserMenu();
     navigate("/");
-  }
-  
+  };
+
+  const handleCart = () => {
+    navigate("/cart");
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -97,10 +101,23 @@ function Navbar() {
                 Hazem's Store
               </Typography>
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
-              {
-                isAuthenticated?
-                <><Tooltip title="Open settings">
+            <Box
+              sx={{
+                display: "flex",
+                direction: "row",
+                gap: 4,
+                flexGrow: 0,
+                alignItems: "center",
+              }}
+            >
+              <IconButton aria-label="cart" onClick={handleCart}>
+                <Badge badgeContent={4} color="secondary">
+                  <ShoppingCartIcon sx={{ color: "white" }} />
+                </Badge>
+              </IconButton>
+              {isAuthenticated ? (
+                <>
+                  <Tooltip title="Open settings">
                     <Grid container alignItems="center">
                       <Grid>
                         <Typography sx={{ mr: 2 }}>{username}</Typography>
@@ -109,11 +126,13 @@ function Navbar() {
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                           <Avatar
                             alt={username || ""}
-                            src="/static/images/avatar/2.jpg" />
+                            src="/static/images/avatar/2.jpg"
+                          />
                         </IconButton>
                       </Grid>
                     </Grid>
-                  </Tooltip><Menu
+                  </Tooltip>
+                  <Menu
                     sx={{ mt: "45px" }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
@@ -129,21 +148,27 @@ function Navbar() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-
-                      <MenuItem onClick={handleCloseUserMenu}>
-                        <Typography sx={{ textAlign: "center" }}>
-                          Profile
-                        </Typography>
-                      </MenuItem>
-                      <MenuItem onClick={handleLogout}>
-                        <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-                      </MenuItem>
-                    </Menu></>
-              :<Button  variant="contained" color="success" onClick={handleLogin}>
-                Login
-              </Button>
-              }
-              
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        Profile
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        Logout
+                      </Typography>
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleLogin}
+                >
+                  Login
+                </Button>
+              )}
             </Box>
           </Box>
         </Toolbar>
