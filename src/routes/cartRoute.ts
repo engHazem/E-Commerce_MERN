@@ -1,16 +1,24 @@
 import exprees from 'express';
-import { getActiveCartForUser } from '../services/cartService';
-import validateJWT, { AuthenticatedRequest } from '../middlewares/validateJWT';
+import { addItemToCart, getActiveCartForUser } from '../services/cartService';
+import { AuthenticatedRequest } from '../types/AuthenticatedRequest';
+import validateJWT from '../middlewares/validateJWT';
 const router = exprees.Router();
 
 
 router.get('/',validateJWT, async (request:AuthenticatedRequest, response) => {
     const userId = request.user._id;
     const cart = await getActiveCartForUser({userId});
-    response.status(cart.statuscode || 500).send(cart.data);
+    response.status(200).send(cart);
 }
 );
 
+router.post('/items',validateJWT, async (request:AuthenticatedRequest, res) => {
+    const userId = request.user._id;
+    const {productId, quantity} = request.body;
+    const response = await addItemToCart({userId,productId, quantity});
+    res.status(response.statuscode || 500).send(response.data);
+}
+);
 
 
 
