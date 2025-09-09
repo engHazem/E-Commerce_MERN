@@ -8,7 +8,7 @@ router.post('/register', async (request, response) => {
   try {
     const {firstName,lastName,email,password} = request.body;
     const {statuscode,data} = await registerUser({firstName,lastName,email,password});
-    response.status(statuscode).send(data);  
+    response.status(statuscode).json(data);  
   }
     catch (error) {
         response.status(500).send('Internal server error');
@@ -21,7 +21,7 @@ router.post('/login', async (request, response) => {
    try{
     const {email,password} = request.body;
     const {data,statuscode} = await loginUser({email,password});
-    response.status(statuscode).send(data);
+    response.status(statuscode).json(data);
    }
     catch(error){
       response.status(500).send('Internal server error');
