@@ -36,6 +36,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         }));
 
         setCartItem(cartItemsMapped)
+        setTotalAmount(cart.totalAmount);
       } catch (error) {
         return setError("An error occurred while fetching the cart");
       }
