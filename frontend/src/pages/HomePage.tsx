@@ -38,7 +38,5 @@ function HomePage() {
 }
 
 export default HomePage;
-function setError(arg0: boolean) {
-    throw new Error("Function not implemented.");
-}
+
 
