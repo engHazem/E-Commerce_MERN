@@ -138,7 +138,7 @@ export const DeleteAllItemsInCart = async ({ userId }: DeleteAllItemsInCartParam
         cart!.items = [];
         cart!.totalAmount = 0;
         const updatedCart = await cart?.save();
-        return { data: updatedCart, statuscode: 200 };
+        return { data: await getActiveCartForUser({ userId ,populateProduct:true}) , statuscode: 200 };
     } catch (error) {
         return { data: error, statuscode: 400 };
     }
