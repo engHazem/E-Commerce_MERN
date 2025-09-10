@@ -14,9 +14,11 @@ import { useAuth } from "../context/Auth/AuthContext";
 import { Badge, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useCart } from "../context/Cart/CartContext";
 
 function Navbar() {
   const { username, isAuthenticated, logout } = useAuth();
+  const {cartItems} = useCart();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -69,7 +71,7 @@ function Navbar() {
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                onClick={() => navigate("/")}
                 sx={{
                   mr: 2,
                   display: { xs: "none", md: "flex" },
@@ -77,6 +79,7 @@ function Navbar() {
                   fontWeight: 500,
                   color: "inherit",
                   textDecoration: "none",
+                  cursor: "pointer",
                 }}
               >
                 Hazem's Store
@@ -87,7 +90,7 @@ function Navbar() {
                 variant="h5"
                 noWrap
                 component="a"
-                href="/"
+                onClick={() => navigate("/")}
                 sx={{
                   mr: 2,
                   display: { xs: "flex", md: "none" },
@@ -96,6 +99,7 @@ function Navbar() {
                   fontWeight: 500,
                   color: "inherit",
                   textDecoration: "none",
+                  cursor: "pointer",
                 }}
               >
                 Hazem's Store
@@ -111,7 +115,8 @@ function Navbar() {
               }}
             >
               <IconButton aria-label="cart" onClick={handleCart}>
-                <Badge badgeContent={4} color="secondary">
+                
+                <Badge badgeContent={cartItems.length} color="secondary">
                   <ShoppingCartIcon sx={{ color: "white" }} />
                 </Badge>
               </IconButton>
