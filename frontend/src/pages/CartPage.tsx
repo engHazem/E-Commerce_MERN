@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
 function CartPage() {
-  const { cartItems, totalAmount,updateItemInCart } = useCart();
+  const { cartItems, totalAmount,updateItemInCart,removeItemFromcart } = useCart();
   const { token } = useAuth();
 
   const handleQuantity= (productId:string,quantity:number) => {
@@ -14,8 +14,8 @@ function CartPage() {
     updateItemInCart(productId,quantity);
   };
 
-  const handleRemoveItem= () => {
-    // Implement remove item functionality
+  const handleRemoveItem= (productId:string) => {
+    removeItemFromcart(productId);
   };
 
   return (
@@ -29,7 +29,7 @@ function CartPage() {
             <Box>
               <Typography variant="h6">{item.title}</Typography>
               <Typography variant="body1">{item.quantity} x {item.unitPrice} EGP</Typography>
-              <Button onClick={() => handleRemoveItem()}><DeleteIcon/> Remove</Button>
+              <Button onClick={() => handleRemoveItem(item.productId)}><DeleteIcon/> Remove</Button>
             </Box>
           </Box>
           <ButtonGroup variant="contained" aria-label="Basic button group">

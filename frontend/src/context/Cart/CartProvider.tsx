@@ -108,8 +108,38 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     };
 
+    const removeItemFromcart = async (productId: string) => {
+        try {
+            const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            })
+            if (!response.ok) {
+                return setError("Failed to remove item from cart");
+            }
+            const cart = await response.json();
+            if(!cart) {
+                return setError("Failed to fetch cart data");
+                
+            }
+            const cartItemsMapped=cart.items.map(({product,quantity}:{product:any ;quantity:number }) => ({
+                productId: product._id,
+                title : product.title,
+                productImage: product.image,
+                quantity,
+                unitPrice: product.price,
+            }));
+            setCartItem ([...cartItemsMapped]);
+            setTotalAmount(cart.totalAmount);
+        } catch (error) {
+            return setError("disconnected from server");
+        }
+    }
+
     return (
-        <CartContext.Provider value={{ cartItems, totalAmount, addToCart, updateItemInCart}}>
+        <CartContext.Provider value={{ cartItems, totalAmount, addToCart, updateItemInCart,removeItemFromcart}}>
             {children}
         </CartContext.Provider>
     );
