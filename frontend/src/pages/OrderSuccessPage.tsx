@@ -3,7 +3,7 @@ import { Button, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 
-function OrderSuccess() {
+function OrderSuccessPage() {
     const navigator = useNavigate();
   return (
 <Container sx={{ mt: 2 ,flexDirection:"column",display:"flex",justifyContent:"center",alignItems:"center"}}>
@@ -16,4 +16,4 @@ function OrderSuccess() {
 }
 
 
-export default OrderSuccess;
+export default OrderSuccessPage;
