@@ -8,7 +8,7 @@ const router = exprees.Router();
 router.get('/',validateJWT, async (request:AuthenticatedRequest, response) => {
   try{
     const userId = request.user._id;
-    const cart = await getActiveCartForUser({userId});
+    const cart = await getActiveCartForUser({userId,populateProduct:true});
     response.status(200).send(cart);
   }
     catch(error){

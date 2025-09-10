@@ -52,7 +52,7 @@ export const loginUser = async ({email,password}: LoginParams) => {
 }
 
 const generateJWT = (data:any) => {
-return jwt.sign(data, process.env.JWT_SECRET ||"", { expiresIn: '5h' } );
+return jwt.sign(data, process.env.JWT_SECRET ||"", { expiresIn: '24h' } );
 }
 
 
