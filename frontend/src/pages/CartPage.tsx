@@ -6,10 +6,17 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
 function CartPage() {
-  const { cartItems, totalAmount } = useCart();
+  const { cartItems, totalAmount,updateItemInCart } = useCart();
   const { token } = useAuth();
 
+  const handleQuantity= (productId:string,quantity:number) => {
+    if(quantity<1) return;
+    updateItemInCart(productId,quantity);
+  };
 
+  const handleRemoveItem= () => {
+    // Implement remove item functionality
+  };
 
   return (
     <Container sx={{ mt: 2 }}>
@@ -22,13 +29,13 @@ function CartPage() {
             <Box>
               <Typography variant="h6">{item.title}</Typography>
               <Typography variant="body1">{item.quantity} x {item.unitPrice} EGP</Typography>
-              <Button><DeleteIcon/> Remove</Button>
+              <Button onClick={() => handleRemoveItem()}><DeleteIcon/> Remove</Button>
             </Box>
           </Box>
           <ButtonGroup variant="contained" aria-label="Basic button group">
-            <Button>-</Button>
+            <Button onClick={() => handleQuantity(item.productId,item.quantity-1)}>-</Button>
             <Button disabled color="primary" >{item.quantity}</Button>
-            <Button>+</Button>
+            <Button onClick={() => handleQuantity(item.productId,item.quantity+1)}>+</Button>
           </ButtonGroup>
           
         </Box>

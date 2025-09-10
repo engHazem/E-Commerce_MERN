@@ -71,14 +71,45 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
                 unitPrice: product.price,
             }));
             setCartItem ([...cartItemsMapped]);
-            setTotalAmount(cart.TotalAmount);
+            setTotalAmount(cart.totalAmount);
+        } catch (error) {
+            return setError("disconnected from server");
+        }
+    };
+    const updateItemInCart = async (productId: string, quantity: number) => {
+        try {
+            const response = await fetch(`${BASE_URL}/cart/items`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ productId, quantity }),
+            })
+            if (!response.ok) {
+                return setError("Failed to update item in cart");
+            }
+            const cart = await response.json();
+            if(!cart) {
+                return setError("Failed to fetch cart data");
+                
+            }
+            const cartItemsMapped=cart.items.map(({product,quantity}:{product:any ;quantity:number }) => ({
+                productId: product._id,
+                title : product.title,
+                productImage: product.image,
+                quantity,
+                unitPrice: product.price,
+            }));
+            setCartItem ([...cartItemsMapped]);
+            setTotalAmount(cart.totalAmount);
         } catch (error) {
             return setError("disconnected from server");
         }
     };
 
     return (
-        <CartContext.Provider value={{ cartItems, totalAmount, addToCart }}>
+        <CartContext.Provider value={{ cartItems, totalAmount, addToCart, updateItemInCart}}>
             {children}
         </CartContext.Provider>
     );
