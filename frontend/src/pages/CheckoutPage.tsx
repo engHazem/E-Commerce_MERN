@@ -3,11 +3,37 @@ import { useCart } from "../context/Cart/CartContext";
 import PaidIcon from '@mui/icons-material/Paid';
 import Button from '@mui/material/Button';
 import { useRef } from "react";
+import { BASE_URL } from "../constans/baseUrl";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/Auth/AuthContext";
 
 function CheckoutPage() {
     const { cartItems, totalAmount } = useCart();
-
+    const navigate = useNavigate();
     const addressRef = useRef<HTMLInputElement | null>(null);
+    const {token} = useAuth();
+    const handlePlaceOrder = async () => {
+        const address = addressRef.current?.value;
+        if (!address) {
+            alert("Please enter a shipping address");
+            return;
+        }
+        const response = await fetch(`${BASE_URL}/cart/checkout`,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                Authorization:`Bearer ${token}`
+
+            },
+            body:JSON.stringify({address})
+        });
+        if(!response.ok){
+            return alert("Failed to place order");
+        }
+
+        navigate("/order-success");
+
+    }
 
     const renderCartItems = () => {
         return <Box display={'flex'} flexDirection={'column'} alignItems={'center'} gap={2} >
@@ -26,7 +52,7 @@ function CheckoutPage() {
             <TextField inputRef={addressRef} fullWidth label="Shipping Address" name="address" variant="outlined" sx={{ mt: 4 }}>
             </TextField>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <Typography variant="h4">Total Amount: {totalAmount}</Typography>  <Button variant="contained" size="large">
+                <Typography variant="h4">Total Amount: {totalAmount}</Typography>  <Button variant="contained" size="large" onClick={handlePlaceOrder}>
                     <PaidIcon />Pay Now
                 </Button>
             </Box>
